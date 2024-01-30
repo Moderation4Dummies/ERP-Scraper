@@ -1,8 +1,15 @@
-# ERP-Scraper
+<p align="center" style="margin-bottom: 0px !important;">
+<img src="https://github.com/Reposits/ERP-Scraper/blob/5f1b104892f439a3b3b815becaa5ad0c513c9ffc/Images/ERP-Scraper.png" width="150" alt="ERP-Scraper Logo" align="center"/> 
+</p>
+<h1 align="center" style="margin-top: 0px;">ERP-Scraper</h1>
+
+<div align="center" >
+  
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/modfordummies.svg?style=social&label=Follow%20%40ModForDummies)](https://twitter.com/ModForDummies)
 [![Static Badge](https://img.shields.io/badge/Join%20our-Discord-5865F2?logo=discord)](https://discord.com/invite/W3ggjxpXKS)
 <!--- [![Discord](https://img.shields.io/discord/1151950861312991252?logo=discord&logoColor=white&label=discord&color=4d3dff)](https://discord.com/invite/W3ggjxpXKS) --> 
 
+</div>
 
 This is a Python script designed to uncover violative Roblox groups and help Roblox's Trust & Safety team remove them. 
 
