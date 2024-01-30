@@ -1,8 +1,14 @@
 import requests
 import concurrent.futures
 import time
+import os
+import json
 
-group_ids = [8923350, 11891341, 17150723]  # Replace with your desired group IDs
+config_path = os.path.join("conf", "group_ids.json")
+with open(config_path, "r") as file:
+    group_ids = json.load(file)
+
+group_ids = [int(group_id) for group_id in group_ids]
 
 def get_group_members(group_id):
       user_ids = set()
