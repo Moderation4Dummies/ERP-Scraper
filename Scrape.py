@@ -2,7 +2,11 @@ import requests
 import concurrent.futures
 import time
 
-group_ids = [8923350, 11891341, 17150723]  # Replace with your desired group IDs
+group_ids = [] # Filled in by the function below, left empty for now
+
+ids = input("Enter all of your group IDS, seperated by commas: ")
+ids_no_whitespace = ids.replace(" ", "")
+group_ids = ids_no_whitespace.split(",")
 
 def get_group_members(group_id):
       user_ids = set()
@@ -73,3 +77,4 @@ with open('group_counts_output.txt', 'w') as outfile:
           outfile.write(f"https://www.roblox.com/groups/{gid}/x - {count}\n")
 
 print("Processing complete. Results saved to group_counts_output.txt")
+
