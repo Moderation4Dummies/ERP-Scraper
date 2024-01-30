@@ -1,6 +1,8 @@
 import requests
 import concurrent.futures
 import time
+import json
+from tqdm import tqdm
 
 group_ids = [8923350, 11891341, 17150723]  # Replace with your desired group IDs
 
@@ -56,20 +58,17 @@ members_processed = 0
 members_groups = []
 
 with concurrent.futures.ThreadPoolExecutor() as executor:
-      futures = {executor.submit(get_user_groups, user_id): user_id for user_id in all_members}
-      for future in concurrent.futures.as_completed(futures):
-          members_groups.append(future.result())
-          members_processed += 1
-          if members_processed % 100 == 0:
-              elapsed_time = time.time() - start_time
-              estimated_total_time = (elapsed_time / members_processed) * len(all_members)
-              remaining_time = estimated_total_time - elapsed_time
-              print(f"Processed {members_processed}/{len(all_members)} members. Estimated time remaining: {remaining_time:.2f} seconds.")
+    future_to_user_id = {executor.submit(get_user_groups, user_id): user_id for user_id in all_members}
+    for future in tqdm(concurrent.futures.as_completed(future_to_user_id), total=len(all_members), unit="member"):
+        members_groups.append(future.result())
 
 group_counts = count_group_ids(members_groups, exclude_group_ids=group_ids)
 
-with open('group_counts_output.txt', 'w') as outfile:
-      for gid, count in group_counts:
-          outfile.write(f"https://www.roblox.com/groups/{gid}/x - {count}\n")
 
-print("Processing complete. Results saved to group_counts_output.txt")
+format_data = [{"group_url": f"https://www.roblox.com/groups/{gid}/x", "count": count} for gid, count in group_counts]
+# snake_case naming convention is cursed
+
+with open('group_counts_output.json', 'w') as outfile:
+    json.dump(format_data, outfile, indent=4)
+
+print("Processing complete. Results saved to group_counts_output.json")
