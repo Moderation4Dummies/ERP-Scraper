@@ -6,9 +6,13 @@ import json
 
 config_path = os.path.join("conf", "group_ids.json")
 with open(config_path, "r") as file:
-    group_ids = json.load(file)
+    group_ids = [int(group_id) for group_id in json.load(file)]
 
-group_ids = [int(group_id) for group_id in group_ids]
+blacklist_path = os.path.join("conf", "blacklist.json")
+with open(blacklist_path, "r") as file:
+    blacklist_group_ids = set(int(group_id) for group_id in json.load(file))
+
+group_ids = [group_id for group_id in group_ids if group_id not in blacklist_group_ids]
 
 def get_group_members(group_id):
       user_ids = set()
