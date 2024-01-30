@@ -17,7 +17,7 @@ This is a [Python](https://www.python.org/) script designed to uncover violative
 
 Roblox has a [serious problem](https://youtu.be/RxJvvP2erDE?si=gCO-cn-jKvgKWa-c&t=134) with users creating accounts for sexual purposes, commonly referred to as ERP (erotic roleplay) accounts. 
 
-Many of these accounts create or hijack groups hosted on the website in order to find each other by using the members lists as directories. Most ERP accounts are in several of these violative groups.
+Many of these accounts create or hijack groups hosted on the website to find each other by using the members lists as directories. Most ERP accounts are in several of these violative groups.
 
 <h2 align="center" style="margin-top: 0px;">How does it work?</h1>
 
@@ -34,7 +34,7 @@ Finding a group to use as a sample is easy. The most effective method is to use 
 
 <h2 align="center" style="margin-top: 0px;">What do I do with the results?</h1>
 
-Results are output to a txt file format that sorts the groups by the highest to lowest number of appearences in the sample groups. 
+Results are output to a txt file format that sorts the groups by the highest to lowest number of appearances in the sample groups. 
 
 > [!TIP]
-> We suggest looking through the members lists of these groups to see if they're mostly being joined by ERP accounts, and reporting them using Roblox's [support form](https://www.roblox.com/support) if they are.
+> We suggest looking through the members lists of these groups to see if they're mostly being joined by ERP accounts and reporting them using Roblox's [support form](https://www.roblox.com/support) if they are.
