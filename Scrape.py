@@ -1,8 +1,7 @@
 import requests
 import concurrent.futures
 import time
-
-group_ids = [8923350, 11891341, 17150723]  # Replace with your desired group IDs
+from argparse import ArgumentParser
 
 def get_group_members(group_id):
       user_ids = set()
@@ -42,7 +41,61 @@ def count_group_ids(members_groups, exclude_group_ids):
                   group_count[gid] = group_count.get(gid, 0) + 1
       return sorted(group_count.items(), key=lambda x: x[1], reverse=True)
 
+def parse_ids(file_path, target):
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                # Split the line by commas and whitespace
+                tokens = line.strip().split(',')
+                # Iterate over tokens to extract numeric values
+                for token in tokens:
+                    try:
+                        # Convert token to integer and add to ids list
+                        numeric_value = int(token.strip())
+                        target.append(numeric_value)
+                    except ValueError:
+                        # Handle non-numeric tokens here if needed
+                        pass
+    except Exception as e:
+        print(f"Cant open file {file_path}: {e}")
+
+
 all_members = set()
+
+# argument parser
+# used for -t/--txt -o/--out
+parser = ArgumentParser()
+parser.add_argument('ids', nargs='*', type=int, help='IDs (non-option arguments)')
+parser.add_argument('-t', '--csv', type=str, help='Path to a file wil comma-seperated IDs to read from')
+parser.add_argument('-o', '--out', type=str, help='Path to output file', default="group_counts_output.txt")
+
+# Parse the arguments
+args = parser.parse_args()
+group_ids = args.ids
+
+# Load in comma-seperated txt file
+# Bad IDs (non numeric) provided here are ignored
+if args.csv:
+    parse_ids(args.csv, group_ids)
+
+# if group_ids is somehow still empty, we should ask the user for group IDs
+if not group_ids:
+    while True:
+        next_id = input("Please input a group ID, or type 'exit' to finish: ")
+        if next_id.lower() == "exit":
+            if not group_ids:
+                # if group_ids is STILL empty, escape the program
+                print("No group IDs provided, closing...")
+                exit()
+
+            break
+
+        try:
+            id = int(next_id)
+            group_ids.append(id)
+        except ValueError:
+            print(f"ID {next_id} is not a number!")
+
 for group_id in group_ids:
       print(f"Collecting members from group {group_id}...")
       members = get_group_members(group_id)
