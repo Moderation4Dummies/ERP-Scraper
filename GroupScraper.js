@@ -3,17 +3,18 @@ const { setTimeout } = require("timers");
 const fs = require("fs").promises;
 require("node:timers");
 
-let groupId = 0; // Put your desired group here
+let groupId = 0;
 const limit = 100;
 let allUserLinks = [];
-let allUserNames = []; // Stores every username
-let fullUserNames = []; // Next step (spreading them out for ease for troubleshooting, + due to some programs breaking?)
+let allUserNames = [];
+let UserData = []
+let fullUserNames = [];
 let StoredIDs = [];
 let intervalID = 0;
 
 const BlacklistedWords = ["Force"]; // Put commonly used bypassed words into here, it'll be used to filter out potentially harmful usernames/display names
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms)); //
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms)); // Add a delay
 
 async function getAllUserIds() {
   let nextPageCursor = null;
@@ -25,14 +26,11 @@ async function getAllUserIds() {
           nextPageCursor ? `&cursor=${nextPageCursor}` : ""
         }`
       );
-      // console.log(response)
 
       const currentPageMembers = response.data.data;
-      // console.log(currentPageMembers)
       const userLinks = currentPageMembers.map(
         (member) => `https://www.roblox.com/users/${member.user.userId}/profile`
       );
-      console.log(currentPageMembers);
       const Usernames = await currentPageMembers.map((member) => {
         allUserNames.push({
           Username: member.user.username,
@@ -40,7 +38,6 @@ async function getAllUserIds() {
           UserLink: `https://www.roblox.com/users/${member.user.userId}/profile`
         });
       });
-      console.log(Usernames);
 
       fullUserNames = BlacklistedWords.map((word) => {
         return allUserNames.filter(
@@ -49,10 +46,10 @@ async function getAllUserIds() {
             username.Displayname.includes(word)
         );
       }); // Filter the users by the blacklisted word provided
-      console.log({ allUserNames });
       currentPageMembers.map((member) => StoredIDs.push(member.user.userId));
 
       allUserLinks = allUserLinks.concat(userLinks);
+      UserData = currentPageMembers
 
       nextPageCursor = response.data.nextPageCursor;
     } catch (error) {
@@ -73,16 +70,13 @@ async function getAllUserIds() {
 
     fullUserNames
       .map(async (currentEntry) => {
-        console.log(currentEntry)
         currentEntry.map(entry =>
             {
-            console.log(entry.Username)
-            UsernamesList.push(`${entry.Username}, ${entry.Displayname}, ${entry.UserLink}`) // Push everything to a new array, you may be asking "why won't return work?" I've tried.
+            UsernamesList.push(`${entry.Username}, ${entry.Displayname}, ${entry.UserLink}`)
             }
         )
       })
 
-    console.log({UsernamesList});
 
     await fs.writeFile(
       "user_ids.txt",
@@ -98,15 +92,21 @@ async function getAllUserIds() {
 async function ScrapeGroups() {
   const BaseResponse = await axios.get(
     `https://groups.roblox.com/v1/groups/${groupId}`
-  );
-  console.log(BaseResponse.data.name);
+  ); // Grab the info of the basegroup
   const BaseGroup = BaseResponse.data.name;
   const UserIDs = await getAllUserIds();
   let Groups = [];
   let GroupsIDs = [];
 
+  let GroupCache = await fs.readFile('cache/groupscache.txt')
+  let UserCache = await JSON.parse(await fs.readFile('cache/user_cache.txt', 'utf-8')) // Read caches
+
   await Promise.all(
     UserIDs.map(async (id) => {
+      const CachedUser = await UserCache.find(user => user.user.userId == id)
+      if(CachedUser) {
+        return // If there is already an entry in the cache, exit
+      }
       try {
         const response = await axios.get(
           `https://groups.roblox.com/v1/users/${id}/groups/roles`
@@ -162,12 +162,18 @@ async function ScrapeGroups() {
       .join(", ")
   )?.join("\n");
 
-  await fs.writeFile("common_groups.txt", Values);
-  const ID = GroupsIDs.find((group) => group.Name === HighestValue.Name);
+  const ID = await GroupsIDs.find((group) => group.Name === HighestValue.Name);
 
   groupId = ID.ID; // This changes it to match the most common group (and it filters out the base group itself)
+  
+    // Write all the caches
+    await fs.writeFile("common_groups.txt", Values);
+    await fs.writeFile('cache/groupscache.txt', JSON.stringify(MappedGroups))
+    await fs.writeFile('cache/user_cache.txt', JSON.stringify(UserData))
 
   ScrapeGroups() // Re-run the function again. It won't stop itself, you have to do so manually. (Using Node.js, that'd be Control + C)
+  console.log(`Times ran: ${intervalID}`) // Tells you how many times the function has ran
+  intervalID++
 }
 
-getAllUserIds();
+ScrapeGroups();
