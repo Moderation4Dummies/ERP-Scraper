@@ -10,7 +10,6 @@ cache_dir = 'cache'
 user_cache_file = 'user_cache.json'
 group_cache_file = 'group_cache.json'
 
-
 def load_cache(cache_dir, filename):
     file_path = os.path.join(cache_dir, filename)
     try:
@@ -101,10 +100,6 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
               print(f"Processed {members_processed}/{len(all_members)} members. Estimated time remaining: {remaining_time:.2f} seconds.")
 
 group_counts = count_group_ids(members_groups, exclude_group_ids=group_ids)
-
-with open('group_counts_output.txt', 'w') as outfile:
-      for gid, count in group_counts:
-          outfile.write(f"https://www.roblox.com/groups/{gid}/x - {count}\n")
 
 outputs_dir = 'outputs'
 if not os.path.exists(outputs_dir):
