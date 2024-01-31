@@ -8,7 +8,7 @@ I tested this on a 22k member roblox group and it got them all lol
 
 Contributions by Forceofdev
 */
-let groupId = 17406419;
+let groupId = 0; // Put your group in here!!
 const limit = 100;
 let allUserLinks = [];
 let StoredIDs = [];
