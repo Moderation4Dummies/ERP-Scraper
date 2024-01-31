@@ -102,10 +102,6 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
 
 group_counts = count_group_ids(members_groups, exclude_group_ids=group_ids)
 
-with open('group_counts_output.txt', 'w') as outfile:
-      for gid, count in group_counts:
-          outfile.write(f"https://www.roblox.com/groups/{gid}/x - {count}\n")
-
 outputs_dir = 'outputs'
 if not os.path.exists(outputs_dir):
       os.makedirs(outputs_dir)
