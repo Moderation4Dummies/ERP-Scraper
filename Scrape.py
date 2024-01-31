@@ -10,7 +10,6 @@ cache_dir = 'cache'
 user_cache_file = 'user_cache.json'
 group_cache_file = 'group_cache.json'
 
-
 def load_cache(cache_dir, filename):
     file_path = os.path.join(cache_dir, filename)
     try:
